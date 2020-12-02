@@ -3,6 +3,7 @@ package com.example.academyjetpack.ui.reader
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.ViewModelProvider
 import com.example.academyjetpack.R
 import com.example.academyjetpack.ui.reader.content.ModuleContentFragment
 import com.example.academyjetpack.ui.reader.list.ModuleListFragment
@@ -11,11 +12,13 @@ class CourseReaderActivity : AppCompatActivity(), CourseReaderCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_course_reader)
+        val viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[CourseReaderViewModel::class.java]
 
         val bundle = intent.extras
         if (bundle != null) {
             val courseId = bundle.getString(EXTRA_COURSE_ID)
             if (courseId != null ) {
+                viewModel.setSelectedCourse(courseId)
                 populateFragment()
             }
         }
