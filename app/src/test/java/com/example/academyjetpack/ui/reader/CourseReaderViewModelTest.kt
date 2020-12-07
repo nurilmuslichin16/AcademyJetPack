@@ -1,12 +1,22 @@
 package com.example.academyjetpack.ui.reader
 
 import com.example.academyjetpack.data.ContentEntity
+import com.example.academyjetpack.data.ModuleEntity
+import com.example.academyjetpack.data.source.AcademyRepository
 import com.example.academyjetpack.utils.DataDummy
 import junit.framework.TestCase
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnitRunner
 
-class CourseReaderViewModelTest : TestCase() {
+@RunWith(MockitoJUnitRunner::class)
+class CourseReaderViewModelTest {
 
     private lateinit var viewModel: CourseReaderViewModel
 
@@ -15,9 +25,12 @@ class CourseReaderViewModelTest : TestCase() {
     private val dummyModules = DataDummy.generateDummyModules(courseId)
     private val moduleId = dummyModules[0].moduleId
 
+    @Mock
+    private lateinit var academyRepository: AcademyRepository
+
     @Before
-    override fun setUp() {
-        viewModel = CourseReaderViewModel()
+    fun setUp() {
+        viewModel = CourseReaderViewModel(academyRepository)
         viewModel.setSelectedCourse(courseId)
         viewModel.setSelectedModule(moduleId)
 
@@ -27,14 +40,18 @@ class CourseReaderViewModelTest : TestCase() {
 
     @Test
     fun testGetModules() {
+        `when`<List<ModuleEntity>>(academyRepository.getAllModulesByCourse(courseId)).thenReturn(dummyModules as ArrayList<ModuleEntity>)
         val moduleEntities = viewModel.getModules()
+        verify<AcademyRepository>(academyRepository).getAllModulesByCourse(courseId)
         assertNotNull(moduleEntities)
         assertEquals(7, moduleEntities.size)
     }
 
     @Test
     fun testGetSelectedModule() {
+        `when`(academyRepository.getContent(courseId, moduleId)).thenReturn(dummyModules[0])
         val moduleEntity = viewModel.getSelectedModule()
+        verify(academyRepository).getContent(courseId, moduleId)
         assertNotNull(moduleEntity)
         val contentEntity = moduleEntity.contentEntity
         assertNotNull(contentEntity)
