@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.academyjetpack.R
 import com.example.academyjetpack.data.ModuleEntity
+import com.example.academyjetpack.ui.academy.viewmodel.ViewModelFactory
 import com.example.academyjetpack.ui.reader.CourseReaderActivity
 import com.example.academyjetpack.ui.reader.CourseReaderCallback
 import com.example.academyjetpack.ui.reader.CourseReaderViewModel
@@ -33,7 +34,8 @@ class ModuleListFragment : Fragment(), MyAdapterClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory())[CourseReaderViewModel::class.java]
+        val factory = ViewModelFactory.getInstance(requireActivity())
+        viewModel = ViewModelProvider(requireActivity(), factory)[CourseReaderViewModel::class.java]
         adapter = ModuleListAdapter(this)
         populateRecyclerView(viewModel.getModules())
     }

@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.academyjetpack.R
 import com.example.academyjetpack.data.ContentEntity
 import com.example.academyjetpack.data.ModuleEntity
+import com.example.academyjetpack.ui.academy.viewmodel.ViewModelFactory
 import com.example.academyjetpack.ui.reader.CourseReaderViewModel
 import kotlinx.android.synthetic.main.fragment_module_content.*
 
@@ -29,7 +30,8 @@ class ModuleContentFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (activity != null) {
-            val viewModel = ViewModelProvider(requireActivity(), ViewModelProvider.NewInstanceFactory())[CourseReaderViewModel::class.java]
+            val factory = ViewModelFactory.getInstance(requireActivity())
+            val viewModel = ViewModelProvider(requireActivity(), factory)[CourseReaderViewModel::class.java]
             val module = viewModel.getSelectedModule()
             populateWebView(module)
         }
