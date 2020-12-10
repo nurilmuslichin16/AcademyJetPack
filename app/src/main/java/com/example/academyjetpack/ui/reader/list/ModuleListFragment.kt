@@ -32,12 +32,17 @@ class ModuleListFragment : Fragment(), MyAdapterClickListener {
         return inflater.inflate(R.layout.fragment_module_list, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val factory = ViewModelFactory.getInstance(requireActivity())
         viewModel = ViewModelProvider(requireActivity(), factory)[CourseReaderViewModel::class.java]
         adapter = ModuleListAdapter(this)
-        populateRecyclerView(viewModel.getModules())
+
+        progress_bar.visibility = View.VISIBLE
+        viewModel.getModules().observe(requireActivity(), { modules ->
+            progress_bar.visibility = View.GONE
+            populateRecyclerView(modules)
+        })
     }
 
     override fun onAttach(context: Context) {

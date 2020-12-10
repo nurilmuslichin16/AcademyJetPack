@@ -28,16 +28,22 @@ class BookmarkFragment : Fragment(), BookmarkFragmentCallback {
         return inflater.inflate(R.layout.fragment_bookmark, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
 
             val factory = ViewModelFactory.getInstance(requireActivity())
             val viewModel = ViewModelProvider(this, factory)[BookmarkViewModel::class.java]
-            val courses = viewModel.getBookmark()
 
             val adapter = BookmarkAdapter(this)
-            adapter.setCourses(courses)
+
+            progress_bar.visibility = View.VISIBLE
+            viewModel.getBookmark().observe(requireActivity(), { courses ->
+                progress_bar.visibility = View.GONE
+                adapter.setCourses(courses)
+                adapter.notifyDataSetChanged()
+            })
+
             with(rv_bookmark) {
                 layoutManager = LinearLayoutManager(context)
                 setHasFixedSize(true)

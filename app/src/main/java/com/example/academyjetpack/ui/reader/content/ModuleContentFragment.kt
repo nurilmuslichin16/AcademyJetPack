@@ -27,13 +27,19 @@ class ModuleContentFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_module_content, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
             val factory = ViewModelFactory.getInstance(requireActivity())
             val viewModel = ViewModelProvider(requireActivity(), factory)[CourseReaderViewModel::class.java]
-            val module = viewModel.getSelectedModule()
-            populateWebView(module)
+
+            progress_bar.visibility = View.VISIBLE
+            viewModel.getSelectedModule().observe(requireActivity(), { module ->
+                progress_bar.visibility = View.GONE
+                if (module != null) {
+                    populateWebView(module)
+                }
+            })
         }
     }
 

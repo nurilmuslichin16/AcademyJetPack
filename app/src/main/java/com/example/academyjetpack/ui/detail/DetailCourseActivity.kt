@@ -2,6 +2,7 @@ package com.example.academyjetpack.ui.detail
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
@@ -36,10 +37,16 @@ class DetailCourseActivity : AppCompatActivity() {
         if (extras != null ) {
             val courseId = extras.getString(EXTRA_COURSE)
             if (courseId != null) {
+                progress_bar.visibility = View.VISIBLE
+
                 viewModel.setSelectedCourse(courseId)
-                val modules = viewModel.getModules()
-                adapter.setModules(modules)
-                populateCourse(viewModel.getCourse())
+                viewModel.getModules().observe(this, { modules ->
+                    progress_bar.visibility = View.GONE
+
+                    adapter.setModules(modules)
+                    adapter.notifyDataSetChanged()
+                })
+                viewModel.getCourse().observe(this, { course -> populateCourse(course)})
             }
         }
 

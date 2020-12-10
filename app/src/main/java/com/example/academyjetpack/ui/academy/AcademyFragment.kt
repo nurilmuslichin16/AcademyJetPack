@@ -26,16 +26,21 @@ class AcademyFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_academy, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
 
             val factory = ViewModelFactory.getInstance(requireActivity())
             val viewModel = ViewModelProvider(this, factory)[AcademyViewModel::class.java]
-            val courses = viewModel.getCourses()
 
             val academyAdapter = AcademyAdapter()
-            academyAdapter.setCourses(courses)
+
+            progress_bar.visibility = View.VISIBLE
+            viewModel.getCourses().observe(requireActivity(), { courses ->
+                progress_bar.visibility = View.GONE
+                academyAdapter.setCourses(courses)
+                academyAdapter.notifyDataSetChanged()
+            })
 
             with(rv_academy) {
                 layoutManager = LinearLayoutManager(context)
