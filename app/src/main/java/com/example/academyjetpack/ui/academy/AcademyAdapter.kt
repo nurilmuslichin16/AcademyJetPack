@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.academyjetpack.R
-import com.example.academyjetpack.data.CourseEntity
+import com.example.academyjetpack.data.source.local.entity.CourseEntity
 import com.example.academyjetpack.ui.detail.DetailCourseActivity
 import kotlinx.android.synthetic.main.items_academy.view.*
 

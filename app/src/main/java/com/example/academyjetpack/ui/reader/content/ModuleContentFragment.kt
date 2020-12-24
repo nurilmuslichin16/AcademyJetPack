@@ -5,12 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.academyjetpack.R
-import com.example.academyjetpack.data.ContentEntity
-import com.example.academyjetpack.data.ModuleEntity
+import com.example.academyjetpack.data.source.local.entity.ModuleEntity
 import com.example.academyjetpack.ui.academy.viewmodel.ViewModelFactory
 import com.example.academyjetpack.ui.reader.CourseReaderViewModel
+import com.example.academyjetpack.vo.Status
 import kotlinx.android.synthetic.main.fragment_module_content.*
 
 class ModuleContentFragment : Fragment() {
@@ -33,11 +34,25 @@ class ModuleContentFragment : Fragment() {
             val factory = ViewModelFactory.getInstance(requireActivity())
             val viewModel = ViewModelProvider(requireActivity(), factory)[CourseReaderViewModel::class.java]
 
-            progress_bar.visibility = View.VISIBLE
-            viewModel.getSelectedModule().observe(requireActivity(), { module ->
-                progress_bar.visibility = View.GONE
-                if (module != null) {
-                    populateWebView(module)
+            viewModel.selectedModule.observe(viewLifecycleOwner, { moduleEntity ->
+                if (moduleEntity != null) {
+                    when (moduleEntity.status) {
+                        Status.LOADING -> progress_bar.visibility = View.VISIBLE
+                        Status.SUCCESS -> if (moduleEntity.data != null) {
+                            progress_bar.visibility = View.GONE
+                            if (moduleEntity.data.contentEntity != null) {
+                                populateWebView(moduleEntity.data)
+                            }
+                            //setButtonNextPrevState(moduleEntity.data)
+                            if (!moduleEntity.data.read) {
+                                viewModel.readContent(moduleEntity.data)
+                            }
+                        }
+                        Status.ERROR -> {
+                            progress_bar.visibility = View.GONE
+                            Toast.makeText(context, "Terjadi kesalahan", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             })
         }

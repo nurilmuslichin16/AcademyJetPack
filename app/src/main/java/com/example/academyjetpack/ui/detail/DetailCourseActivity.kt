@@ -3,8 +3,7 @@ package com.example.academyjetpack.ui.detail
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -12,10 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.academyjetpack.R
-import com.example.academyjetpack.data.CourseEntity
+import com.example.academyjetpack.data.source.local.entity.CourseEntity
 import com.example.academyjetpack.ui.academy.viewmodel.ViewModelFactory
 import com.example.academyjetpack.ui.reader.CourseReaderActivity
-import com.example.academyjetpack.utils.DataDummy
+import com.example.academyjetpack.vo.Status
 import kotlinx.android.synthetic.main.activity_detail_course.*
 import kotlinx.android.synthetic.main.content_detail_course.*
 
@@ -37,16 +36,26 @@ class DetailCourseActivity : AppCompatActivity() {
         if (extras != null ) {
             val courseId = extras.getString(EXTRA_COURSE)
             if (courseId != null) {
-                progress_bar.visibility = View.VISIBLE
-
                 viewModel.setSelectedCourse(courseId)
-                viewModel.getModules().observe(this, { modules ->
-                    progress_bar.visibility = View.GONE
 
-                    adapter.setModules(modules)
-                    adapter.notifyDataSetChanged()
+                viewModel.courseModule.observe(this, { courseWithModuleResource ->
+                    if (courseWithModuleResource != null) {
+                        when (courseWithModuleResource.status) {
+                            Status.LOADING -> progress_bar.visibility = View.VISIBLE
+                            Status.SUCCESS -> if (courseWithModuleResource.data != null) {
+                                progress_bar.visibility = View.GONE
+                                //mainBinding?.content?.visibility = View.VISIBLE
+                                adapter.setModules(courseWithModuleResource.data.mModules)
+                                adapter.notifyDataSetChanged()
+                                populateCourse(courseWithModuleResource.data.mCourse)
+                            }
+                            Status.ERROR -> {
+                                progress_bar.visibility = View.GONE
+                                Toast.makeText(applicationContext, "Terjadi kesalahan", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
                 })
-                viewModel.getCourse().observe(this, { course -> populateCourse(course)})
             }
         }
 

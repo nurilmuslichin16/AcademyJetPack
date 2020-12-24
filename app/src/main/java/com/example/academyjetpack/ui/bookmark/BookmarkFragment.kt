@@ -9,9 +9,8 @@ import androidx.core.app.ShareCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.academyjetpack.R
-import com.example.academyjetpack.data.CourseEntity
+import com.example.academyjetpack.data.source.local.entity.CourseEntity
 import com.example.academyjetpack.ui.academy.viewmodel.ViewModelFactory
-import com.example.academyjetpack.utils.DataDummy
 import kotlinx.android.synthetic.main.fragment_bookmark.*
 
 class BookmarkFragment : Fragment(), BookmarkFragmentCallback {

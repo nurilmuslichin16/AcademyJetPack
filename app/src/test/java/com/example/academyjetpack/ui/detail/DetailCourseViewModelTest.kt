@@ -3,11 +3,10 @@ package com.example.academyjetpack.ui.detail
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.example.academyjetpack.data.CourseEntity
-import com.example.academyjetpack.data.ModuleEntity
+import com.example.academyjetpack.data.source.local.entity.CourseEntity
+import com.example.academyjetpack.data.source.local.entity.ModuleEntity
 import com.example.academyjetpack.data.source.AcademyRepository
 import com.example.academyjetpack.utils.DataDummy
-import junit.framework.TestCase
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before

@@ -2,9 +2,9 @@ package com.example.academyjetpack.data.source
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.academyjetpack.data.ContentEntity
-import com.example.academyjetpack.data.CourseEntity
-import com.example.academyjetpack.data.ModuleEntity
+import com.example.academyjetpack.data.source.local.entity.ContentEntity
+import com.example.academyjetpack.data.source.local.entity.CourseEntity
+import com.example.academyjetpack.data.source.local.entity.ModuleEntity
 import com.example.academyjetpack.data.source.remote.RemoteDataSource
 import com.example.academyjetpack.data.source.remote.response.ContentResponse
 import com.example.academyjetpack.data.source.remote.response.CourseResponse
