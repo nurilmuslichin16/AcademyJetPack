@@ -16,6 +16,8 @@ import kotlinx.android.synthetic.main.fragment_module_content.*
 
 class ModuleContentFragment : Fragment() {
 
+    private lateinit var viewModel: CourseReaderViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -32,7 +34,7 @@ class ModuleContentFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
             val factory = ViewModelFactory.getInstance(requireActivity())
-            val viewModel = ViewModelProvider(requireActivity(), factory)[CourseReaderViewModel::class.java]
+            viewModel = ViewModelProvider(requireActivity(), factory)[CourseReaderViewModel::class.java]
 
             viewModel.selectedModule.observe(viewLifecycleOwner, { moduleEntity ->
                 if (moduleEntity != null) {
@@ -43,7 +45,7 @@ class ModuleContentFragment : Fragment() {
                             if (moduleEntity.data.contentEntity != null) {
                                 populateWebView(moduleEntity.data)
                             }
-                            //setButtonNextPrevState(moduleEntity.data)
+                            setButtonNextPrevState(moduleEntity.data)
                             if (!moduleEntity.data.read) {
                                 viewModel.readContent(moduleEntity.data)
                             }
@@ -53,6 +55,8 @@ class ModuleContentFragment : Fragment() {
                             Toast.makeText(context, "Terjadi kesalahan", Toast.LENGTH_SHORT).show()
                         }
                     }
+                    btn_next.setOnClickListener { viewModel.setNextPage() }
+                    btn_prev.setOnClickListener { viewModel.setPrevPage() }
                 }
             })
         }
@@ -61,6 +65,25 @@ class ModuleContentFragment : Fragment() {
     private fun populateWebView(module: ModuleEntity) {
         val content = module.contentEntity?.content as String
         web_view.loadData(content, "text/html", "UTF-8")
+    }
+
+    private fun setButtonNextPrevState(module: ModuleEntity) {
+        if (activity != null) {
+            when (module.position) {
+                0 -> {
+                    btn_prev.isEnabled = false
+                    btn_next.isEnabled = true
+                }
+                viewModel.getModuleSize() - 1 -> {
+                    btn_prev.isEnabled = true
+                    btn_next.isEnabled = false
+                }
+                else -> {
+                    btn_prev.isEnabled = true
+                    btn_next.isEnabled = true
+                }
+            }
+        }
     }
 
     companion object {
